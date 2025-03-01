@@ -1,0 +1,319 @@
+﻿<Window x:Class="Proyecto_Final_PRO.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
+        Title="GameShop" Height="600" Width="1000" Background="#1E1E2D">
+
+    <Grid Cursor="Hand">
+
+        <!-- Columnas -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0,2*"/>
+            <ColumnDefinition Width="0,8*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Barra lateral -->
+        <Grid Background="#16181D" Grid.Column="0">
+            <StackPanel>
+                <TextBlock Text="GameShop" Foreground="#EAEAEA" FontSize="24" FontWeight="Bold" Margin="10" TextAlignment="Center" />
+                <Separator Background="#EAEAEA" Height="1" Margin="10"/>
+                <Button x:Name="bt_inicio" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="mostrar_inicio">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:ImageAwesome Icon="Home" Width="16" Height="16" Foreground="White" Margin="0,0,5,0"/>
+                        <TextBlock Text="Inicio" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="bt_proximos_lanzamientos" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="mostrar_catalogo">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:ImageAwesome Icon="Calendar" Width="16" Height="16" Foreground="White" Margin="0,0,5,0"/>
+                        <TextBlock Text="Proximos Lanzamientos" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="bt_distribuidoras" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="mostrar_distribuidoras">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:ImageAwesome Icon="Industry" Width="16" Height="16" Foreground="White" Margin="0,0,5,0"/>
+                        <TextBlock Text="Distribuidoras" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- Contenido principal -->
+        <!-- Inicio -->
+        <Grid x:Name="inicio" Grid.Column="1" Visibility="Hidden" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Margin="20">
+                <TextBlock Text="Dashboard" FontSize="24" FontWeight="Bold" Foreground="#EAEAEA" />
+                <WrapPanel>
+                    <Border Background="#2A2D34" Width="200" Height="100" CornerRadius="10" Padding="10" Margin="10">
+                        <StackPanel>
+                            <TextBlock Text="Total Juegos" Foreground="#EAEAEA" />
+                            <TextBlock Text="120" Foreground="#FF2D55" FontSize="24" FontWeight="Bold" />
+                        </StackPanel>
+                    </Border>
+                    <Border Background="#2A2D34" Width="200" Height="100" CornerRadius="10" Padding="10" Margin="10">
+                        <StackPanel>
+                            <TextBlock Text="Usuarios" Foreground="#EAEAEA" />
+                            <TextBlock Text="4500" Foreground="#FF2D55" FontSize="24" FontWeight="Bold" />
+                        </StackPanel>
+                    </Border>
+                    <Border Background="#2A2D34" Width="200" Height="100" CornerRadius="10" Padding="10" Margin="10">
+                        <StackPanel>
+                            <TextBlock Text="Ventas" Foreground="#EAEAEA" />
+                            <TextBlock Text="12312€" Foreground="#FF2D55" FontSize="24" FontWeight="Bold" />
+                        </StackPanel>
+                    </Border>
+                </WrapPanel>
+                <ScottPlot:WpfPlot x:Name="ventas_mensuales" />
+            </StackPanel>
+            <Grid Margin="20,200,20,300"></Grid>
+        </Grid>
+
+        <!-- Próximos juegos -->
+        <Grid Grid.Column="1" x:Name="proximos_juegos">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <WrapPanel>
+                    <ListBox x:Name="gamesList" Background="#1E1E2D" MouseDoubleClick="elemento_seleccionado">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#2A2D34" CornerRadius="10" Margin="5" Width="220">
+                                    <StackPanel>
+                                        <Image Source="{Binding Background_Image}" Width="220" Height="120" Stretch="UniformToFill" Margin="0,0,0,5"/>
+                                        <TextBlock Text="{Binding Name}" Foreground="#EAEAEA" FontSize="14" FontWeight="Bold" TextWrapping="Wrap" Margin="5,0"/>
+                                        <TextBlock Text="{Binding Released}" Foreground="#B0B3B8" FontSize="12" Margin="5,0,0,5"/>
+                                        <ItemsControl ItemsSource="{Binding Short_Screenshots}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Image Source="{Binding Image}" Width="100" Height="60" Margin="2"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </WrapPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <!-- Detalles del juego API -->
+        <Grid x:Name="infoJuego" Visibility="Collapsed" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30*"/>
+                <ColumnDefinition Width="70*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="1">
+                <Border Background="#2A2D34" CornerRadius="10" Padding="20" Margin="20" Opacity="0.9">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock x:Name="gameName" FontSize="42" FontWeight="Bold" Foreground="#EAEAEA"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Fecha de lanzamiento: " Foreground="#EAEAEA" FontSize="20" FontWeight="Bold" Margin="0,0,2,0" />
+                            <TextBlock x:Name="gameReleased" FontSize="20" Foreground="#EAEAEA"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Puntuación: " Foreground="#EAEAEA" FontSize="20" FontWeight="Bold" Margin="0,0,2,0" />
+                            <TextBlock x:Name="gameRating" FontSize="20" Foreground="#EAEAEA"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Género: " Foreground="#EAEAEA" FontSize="20" FontWeight="Bold" Margin="0,0,2,0" />
+                            <TextBlock x:Name="gameGenre" FontSize="20" Foreground="#EAEAEA"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Precio: " Foreground="#EAEAEA" FontSize="20" FontWeight="Bold" Margin="0,0,2,0" />
+                            <TextBlock x:Name="gamePrice" FontSize="20" Foreground="#EAEAEA"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Desarrolladora: " Foreground="#EAEAEA" FontSize="20" FontWeight="Bold" Margin="0,0,2,0" />
+                            <TextBlock x:Name="gameDeveloper" FontSize="20" Foreground="#EAEAEA"/>
+                        </StackPanel>
+                        <Button x:Name="bt_comprar" Margin="30,15,30,15" Content="Añadir a mi catálogo" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="add_juego_a_inventario"/>
+                        <Separator Background="#EAEAEA" Height="1" Margin="0,5"/>
+                        <TextBlock x:Name="gameDescription" FontSize="16" Foreground="#EAEAEA" TextWrapping="Wrap" Text="Capturas del Juego" />
+                        <Image x:Name="imagengrande" Height="250" Width="250"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Grid Grid.Column="0">
+                <Border Background="#2A2D34" CornerRadius="10" Padding="20" Margin="20" Opacity="0.9">
+                    <StackPanel Orientation="Vertical">
+                        <Image x:Name="gameImage" Width="200" Height="200" Margin="0,0,0,10"/>
+                        <TextBlock Text="ScreenShots:" Foreground="#EAEAEA" FontSize="20" FontWeight="Bold" Margin="0,0,2,0" TextAlignment="Center" />
+                        <Separator Background="#EAEAEA" Height="1" />
+                        <ListBox x:Name="gameScreenshots" MouseDoubleClick="abir_captura" Background="#2A2D34">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding}" Width="100" Height="100" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- Distribuidoras -->
+        <Grid Grid.Column="1" x:Name="distribuidoras" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.05*"/>
+                <RowDefinition Height="0.05*"/>
+                <RowDefinition Height="0.45*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Título -->
+            <TextBlock Text="Buscar" FontSize="24" FontWeight="Bold" Foreground="#EAEAEA" Margin="10" Grid.Row="0"/>
+
+            <!-- Fila de búsqueda -->
+            <Grid Grid.Row="1" HorizontalAlignment="Center">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical" Margin="5">
+                        <TextBlock Text="Título" Foreground="#EAEAEA"/>
+                        <TextBox x:Name="tb_titulo" Width="200" Background="#2A2D34" Foreground="#EAEAEA" BorderBrush="#4A5568" BorderThickness="1"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Margin="5">
+                        <TextBlock Text="Año de lanzamiento" Foreground="#EAEAEA"/>
+                        <TextBox x:Name="tb_fecha" Width="200" Background="#2A2D34" Foreground="#EAEAEA" BorderBrush="#4A5568" BorderThickness="1"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Margin="5">
+                        <TextBlock Text="Goty por Año" Foreground="#EAEAEA"/>
+                        <TextBox x:Name="tb_ano" Width="200" Background="#2A2D34" Foreground="#EAEAEA" BorderBrush="#4A5568" BorderThickness="1"/>
+                    </StackPanel>
+                    <Button x:Name="bt_buscar" Content="Buscar" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="aplicar_filtro"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Lista de elementos -->
+            <Grid Grid.Row="2">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <WrapPanel>
+                        <ListBox x:Name="gamesList2" Background="#1E1E2D" MouseDoubleClick="elemento_seleccionado2">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#2A2D34" CornerRadius="10" Margin="5" Width="220">
+                                        <StackPanel>
+                                            <Image Source="{Binding Background_Image}" Width="220" Height="120" Stretch="UniformToFill" Margin="0,0,0,5"/>
+                                            <TextBlock Text="{Binding Name}" Foreground="#EAEAEA" FontSize="14" FontWeight="Bold" TextWrapping="Wrap" Margin="5,0"/>
+                                            <TextBlock Text="{Binding Released}" Foreground="#B0B3B8" FontSize="12" Margin="5,0,0,5"/>
+                                            <ItemsControl ItemsSource="{Binding Short_Screenshots}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapPanel/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Image Source="{Binding Image}" Width="100" Height="60" Margin="2"/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </WrapPanel>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+
+        <!-- Detalles del juego 2 -->
+        <Grid x:Name="infoJuego2" Visibility="Visible" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30*"/>
+                <ColumnDefinition Width="70*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid x:Name="detalles" Grid.Column="1" Visibility="Visible">
+                <Border Background="#2A2D34" CornerRadius="10" Padding="20" Margin="20" Opacity="0.9">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock x:Name="gameName2" FontSize="42" FontWeight="Bold" Foreground="#EAEAEA"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Fecha de lanzamiento: " Foreground="#EAEAEA" FontSize="20" FontWeight="Bold" Margin="0,0,2,0" />
+                            <TextBlock x:Name="gameReleased2" FontSize="20" Foreground="#EAEAEA"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Puntuación: " Foreground="#EAEAEA" FontSize="20" FontWeight="Bold" Margin="0,0,2,0" />
+                            <TextBlock x:Name="gameRating2" FontSize="20" Foreground="#EAEAEA"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Género: " Foreground="#EAEAEA" FontSize="20" FontWeight="Bold" Margin="0,0,2,0" />
+                            <TextBlock x:Name="gameGenre2" FontSize="20" Foreground="#EAEAEA"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Precio: " Foreground="#EAEAEA" FontSize="20" FontWeight="Bold" Margin="0,0,2,0" />
+                            <TextBlock x:Name="gamePrice2" FontSize="20" Foreground="#EAEAEA"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Desarrolladora: " Foreground="#EAEAEA" FontSize="20" FontWeight="Bold" Margin="0,0,2,0" />
+                            <TextBlock x:Name="gameDeveloper2" FontSize="20" Foreground="#EAEAEA"/>
+                        </StackPanel>
+                        <Button x:Name="bt_comprar2" Margin="30,15,30,15" Content="Añadir a mi catálogo" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="add_juego_a_inventario2"/>
+                        <Separator Background="#EAEAEA" Height="1" Margin="0,5"/>
+                        <TextBlock x:Name="gameDescription2" FontSize="16" Foreground="#EAEAEA" TextWrapping="Wrap" Text="Capturas del Juego" />
+                        <Image x:Name="imagengrande2" Height="250" Width="250"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Grid Grid.Column="0">
+                <Border Background="#2A2D34" CornerRadius="10" Padding="20" Margin="20" Opacity="0.9">
+                    <StackPanel Orientation="Vertical">
+                        <Image x:Name="gameImage2" Width="200" Height="200" Margin="0,0,0,10"/>
+                        <TextBlock Text="ScreenShots:" Foreground="#EAEAEA" FontSize="20" FontWeight="Bold" Margin="0,0,2,0" TextAlignment="Center" />
+                        <Separator Background="#EAEAEA" Height="1" />
+                        <ListBox x:Name="gameScreenshots2" MouseDoubleClick="abir_captura2" Background="#2A2D34" HorizontalAlignment="Center" VerticalAlignment="center">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding}" Width="50" Height="50" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Grid x:Name="blur1" Grid.Column="1" Opacity="0.85" Background="#1E1E2D" Visibility="Visible" />
+            <Grid x:Name="blur2" Grid.Column="0" Opacity="0.85" Background="#1E1E2D"  Visibility="Visible"/>
+
+            <Grid x:Name="form_inventario" Grid.Column="1" Visibility="Visible" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#2A2D34" Opacity="0.95">
+                <StackPanel Margin="20">
+                    <WrapPanel>
+                        <Border Background="#2D3748" Width="200" Height="100" CornerRadius="10" Padding="10" Margin="10">
+                            <StackPanel>
+                                <TextBlock Text="Número de copias:" Foreground="#EAEAEA" />
+                                <TextBox x:Name="total_juegos" Foreground="#EAEAEA" FontSize="24" FontWeight="Bold" Background="#2A2D34" BorderBrush="#4A5568" BorderThickness="1" />
+                            </StackPanel>
+                        </Border>
+                        <Border Background="#2D3748" Width="200" Height="100" CornerRadius="10" Padding="10" Margin="10">
+                            <StackPanel>
+                                <TextBlock Text="Precio de Venta: " Foreground="#EAEAEA" />
+                                <TextBox x:Name="precio_venta" Foreground="#EAEAEA" FontSize="24" FontWeight="Bold" Background="#2A2D34" BorderBrush="#4A5568" BorderThickness="1" />
+                            </StackPanel>
+                        </Border>
+                    </WrapPanel>
+                    <Button x:Name="bt_guardar" Content="Guardar" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Margin="5" />
+                    <Button x:Name="bt_cancelar" Content="Cancelar" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Margin="5" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
