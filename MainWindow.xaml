@@ -39,7 +39,13 @@
                 <Button x:Name="bt_inventario" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="mostrar_inventario">
                     <StackPanel Orientation="Horizontal">
                         <fa:ImageAwesome Icon="Tablet" Width="16" Height="16" Foreground="White" Margin="0,0,5,0"/>
-                        <TextBlock Text="Inventario" VerticalAlignment="Center"/>
+                        <TextBlock Text="Mi Inventario" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="bt_catalogo" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="mostrar_micatalogo">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:ImageAwesome Icon="Bookmark" Width="16" Height="16" Foreground="White" Margin="0,0,5,0"/>
+                        <TextBlock Text="Catalogo de Juegos" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
             </StackPanel>
@@ -326,6 +332,40 @@
         <Grid x:Name="inventario" Grid.Column="1" Visibility="Hidden">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <ListBox x:Name="inventoryList" Background="#1E1E2D">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#2A2D34" CornerRadius="10" Margin="5" Width="220">
+                                <StackPanel>
+                                    <Image Source="{Binding Portada}" Width="200" Height="100" Stretch="UniformToFill" Margin="0,5,0,2"/>
+                                    <TextBlock Text="{Binding Nombre}" Foreground="#EAEAEA" FontSize="14" FontWeight="Bold" TextWrapping="Wrap" Margin="5,0"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Copias disponibles: " Foreground="#EAEAEA" FontSize="14" FontWeight="Bold" TextWrapping="Wrap" Margin="5,0"/>
+                                        <TextBlock Text="{Binding Stock}" Foreground="#EAEAEA" FontSize="14" FontWeight="Bold" TextWrapping="Wrap" Margin="5,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </ScrollViewer>
+        </Grid>
+        
+        <!--Catalogo-->
+        <Grid x:Name="mi_catalogo" Grid.Column="1" Visibility="Visible">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.1*"/>
+                <RowDefinition Height="0.9*"/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock Grid.Row="0" Text="Mi Catalogo" Foreground="#EAEAEA" FontSize="24" FontWeight="Bold" Margin="10" />
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <ListBox x:Name="micatalogoList" Background="#1E1E2D">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal"/>

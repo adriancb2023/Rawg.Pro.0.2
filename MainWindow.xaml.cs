@@ -48,8 +48,11 @@ namespace Proyecto_Final_PRO
             infoJuego.Visibility = Visibility.Hidden;
             distribuidoras.Visibility = Visibility.Hidden;
             infoJuego2.Visibility = Visibility.Hidden;
-
-
+            inventario.Visibility = Visibility.Hidden;
+            form_inventario.Visibility = Visibility.Hidden;
+            blur1.Visibility = Visibility.Hidden;
+            blur2.Visibility = Visibility.Hidden;
+            mi_catalogo.Visibility = Visibility.Hidden;
 
         }
 
@@ -216,6 +219,7 @@ namespace Proyecto_Final_PRO
             infoJuego2.Visibility = Visibility.Visible;
         }
 
+        //añadir al inventario real
         private void add_juego_a_inventario2(object sender, EventArgs e)
         {
             blur1.Visibility = Visibility.Visible;
@@ -254,7 +258,7 @@ namespace Proyecto_Final_PRO
                     }
                 }
             }
-        }        
+        }
 
         // aplicar filtro
         private async void aplicar_filtro(object sender, RoutedEventArgs e)
@@ -325,11 +329,9 @@ namespace Proyecto_Final_PRO
             }
         }
 
-
         // Guardar juego en inventario
         private void guardar_inventario(object sender, EventArgs e)
         {
-            // quiero que coja el nombre del juego seleccionado y haga una consulta para sacar su id y guardarlo en la tabla de inventario con el resto de datos que el usuario introduzca
             using (Rawg2Context conexion = new Rawg2Context())
             {
                 // consulta para sacar la id del juego seleccionado
@@ -385,13 +387,31 @@ namespace Proyecto_Final_PRO
             inventario.Visibility = Visibility.Visible;
         }
 
+        //cargar inventario
         private async Task cargar_inventario()
         {
             try
             {
                 using (var context = new Rawg2Context())
                 {
-                    var juegos = await context.Juegos.ToListAsync();
+                    var juegos = await context.Juegos
+                        .Select(j => new
+                        {
+                            j.Id,
+                            j.Nombre,
+                            j.Precio,
+                            j.Desarrollador,
+                            j.Genero,
+                            j.Puntuacion,
+                            j.Lanzamiento,
+                            j.Descripcion,
+                            j.Capturas,
+                            j.Portada,
+                            Stock = context.Inventarios.Where(i => i.IdJuego == j.Id).Sum(i => i.Stock)
+                        })
+                        .Where(j => j.Stock > 0) // Filtrar juegos con stock mayor que cero
+                        .ToListAsync();
+
                     inventoryList.ItemsSource = juegos;
                 }
             }
@@ -401,6 +421,46 @@ namespace Proyecto_Final_PRO
             }
         }
 
+        //mostrar mi catalogo
+        private void mostrar_micatalogo(object sender, RoutedEventArgs e)
+        {
+            ocultar_todo();
+            mi_catalogo.Visibility = Visibility.Visible;
+            cargar_micatalogo(sender, e);
+        }
 
+        //cargar mi catalogo
+        private async void cargar_micatalogo(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                using (var context = new Rawg2Context())
+                {
+                    var juegos = await context.Juegos
+                .OrderBy(j => j.Nombre)
+                .Select(j => new
+                {
+                    j.Id,
+                    j.Nombre,
+                    j.Precio,
+                    j.Desarrollador,
+                    j.Genero,
+                    j.Puntuacion,
+                    j.Lanzamiento,
+                    j.Descripcion,
+                    j.Capturas,
+                    j.Portada,
+                    Stock = context.Inventarios.Where(i => i.IdJuego == j.Id).Sum(i => i.Stock)
+                })
+                .ToListAsync(); micatalogoList.ItemsSource = juegos;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar el catálogo: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // fin de hoy
     }
 }
