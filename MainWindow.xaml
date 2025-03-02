@@ -5,55 +5,79 @@
         xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
         Title="GameShop" Height="600" Width="1000" Background="#1E1E2D">
 
-    <Grid Cursor="Hand">
+
+    <Grid Cursor="Hand" >
 
         <!-- Columnas -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0,2*"/>
             <ColumnDefinition Width="0,8*"/>
         </Grid.ColumnDefinitions>
+        
+        <!--Loguin-->
+        <Grid x:Name="login" Visibility="Collapsed" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Border Background="#2A2D34" CornerRadius="10" Padding="20" Margin="20" Opacity="0.9">
+                <StackPanel>
+                    <TextBlock Text="Iniciar Sesión" Foreground="#EAEAEA" FontSize="24" FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,20"/>
+                    <TextBox x:Name="UsernameTextBox" Margin="10" Background="#1E1E2D" Foreground="#EAEAEA" BorderBrush="#4A5568" BorderThickness="1" />
+                    <PasswordBox x:Name="PasswordBox" Margin="10" Background="#1E1E2D" Foreground="#EAEAEA" BorderBrush="#4A5568" BorderThickness="1" />
+                    <Button Content="Iniciar sesión" Click="LoginButton_Click" Margin="10" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
 
         <!-- Barra lateral -->
         <Grid Background="#16181D" Grid.Column="0">
             <StackPanel>
                 <TextBlock Text="GameShop" Foreground="#EAEAEA" FontSize="24" FontWeight="Bold" Margin="10" TextAlignment="Center" />
                 <Separator Background="#EAEAEA" Height="1" Margin="10"/>
-                <Button x:Name="bt_inicio" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="mostrar_inicio">
+                
+                <Button x:Name="bt_inicio" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="mostrar_inicio" >
                     <StackPanel Orientation="Horizontal">
                         <fa:ImageAwesome Icon="Home" Width="16" Height="16" Foreground="White" Margin="0,0,5,0"/>
-                        <TextBlock Text="Inicio" VerticalAlignment="Center"/>
+                        <TextBlock Text=" Inicio" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <Button x:Name="bt_proximos_lanzamientos" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="mostrar_catalogo">
                     <StackPanel Orientation="Horizontal">
                         <fa:ImageAwesome Icon="Calendar" Width="16" Height="16" Foreground="White" Margin="0,0,5,0"/>
-                        <TextBlock Text="Proximos Lanzamientos" VerticalAlignment="Center"/>
+                        <TextBlock Text=" Proximos Lanzamientos" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <Button x:Name="bt_distribuidoras" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="mostrar_distribuidoras">
                     <StackPanel Orientation="Horizontal">
                         <fa:ImageAwesome Icon="Industry" Width="16" Height="16" Foreground="White" Margin="0,0,5,0"/>
-                        <TextBlock Text="Distribuidoras" VerticalAlignment="Center"/>
+                        <TextBlock Text=" Distribuidoras" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <Button x:Name="bt_inventario" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="mostrar_inventario">
                     <StackPanel Orientation="Horizontal">
                         <fa:ImageAwesome Icon="Tablet" Width="16" Height="16" Foreground="White" Margin="0,0,5,0"/>
-                        <TextBlock Text="Mi Inventario" VerticalAlignment="Center"/>
+                        <TextBlock Text=" Mi Inventario" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <Button x:Name="bt_catalogo" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="mostrar_micatalogo">
                     <StackPanel Orientation="Horizontal">
                         <fa:ImageAwesome Icon="Bookmark" Width="16" Height="16" Foreground="White" Margin="0,0,5,0"/>
-                        <TextBlock Text="Catalogo de Juegos" VerticalAlignment="Center"/>
+                        <TextBlock Text=" Catalogo de Juegos" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
+                <Button x:Name="bt_ventas" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="mostrar_ventas">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:ImageAwesome Icon="Money" Width="16" Height="16" Foreground="White" Margin="0,0,5,0"/>
+                        <TextBlock Text=" Vender" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Bottom">
+                <TextBlock x:Name="EmpleadoNombre" Foreground="#EAEAEA" FontSize="16" FontWeight="Bold" Margin="10" TextAlignment="Center" />
+                <Button x:Name="bt_logout" Content="Cerrar sesión" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="logout" Margin="10"/>
             </StackPanel>
         </Grid>
 
         <!-- Contenido principal -->
         <!-- Inicio -->
-        <Grid x:Name="inicio" Grid.Column="1" Visibility="Hidden" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid x:Name="inicio" Grid.Column="1" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel Margin="20">
                 <TextBlock Text="Dashboard" FontSize="24" FontWeight="Bold" Foreground="#EAEAEA" />
                 <WrapPanel>
@@ -82,8 +106,13 @@
         </Grid>
 
         <!-- Próximos juegos -->
-        <Grid Grid.Column="1" x:Name="proximos_juegos">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Grid.Column="1" x:Name="proximos_juegos"  Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.1*"/>
+                <RowDefinition Height="0.9*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="Proximos Lanzamientos" Foreground="#EAEAEA" FontSize="24" FontWeight="Bold" Margin="10" />
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
                 <WrapPanel>
                     <ListBox x:Name="gamesList" Background="#1E1E2D" MouseDoubleClick="elemento_seleccionado">
                         <ListBox.ItemsPanel>
@@ -357,7 +386,7 @@
         </Grid>
         
         <!--Catalogo-->
-        <Grid x:Name="mi_catalogo" Grid.Column="1" Visibility="Visible">
+        <Grid x:Name="mi_catalogo" Grid.Column="1" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.1*"/>
                 <RowDefinition Height="0.9*"/>
@@ -386,10 +415,43 @@
             </ScrollViewer>
         </Grid>
 
+        <!--Ventas-->
+        <Grid x:Name="ventas" Grid.Column="1" Visibility="Visible">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.1*"/>
+                <RowDefinition Height="0.9*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Panel de Ventas" Foreground="#EAEAEA" FontSize="24" FontWeight="Bold" Margin="10" Grid.Row="0"/>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="0.5*"/>
+                </Grid.ColumnDefinitions>
 
+                <!--Selección de juego -->
+                <StackPanel Grid.Column="0" Margin="10">
+                    <TextBlock Text="Seleccionar Juego" Foreground="#EAEAEA" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+                    <ComboBox x:Name="cb_juegos_ventas" Background="#2A2D34" Foreground="Black" SelectionChanged="juego_elegido" BorderBrush="#4A5568" BorderThickness="1"/>
+                    <TextBlock Text="Genero:" Foreground="#EAEAEA" FontSize="14" FontWeight="Bold" Margin="10,20,0,0"/>
+                    <TextBlock x:Name="tb_generoJuego" Foreground="#EAEAEA" FontSize="14" Margin="10,0,0,0"/>
+                    <TextBlock Text="Precio:" Foreground="#EAEAEA" FontSize="14" FontWeight="Bold" Margin="10,20,0,0"/>
+                    <TextBlock x:Name="tb_precioJuego" Foreground="#EAEAEA" FontSize="14" Margin="10,0,0,0"/>
+                    <TextBlock Text="Stock:" Foreground="#EAEAEA" FontSize="14" FontWeight="Bold" Margin="10,20,0,0"/>
+                    <TextBlock x:Name="tb_stockJuego" Foreground="#EAEAEA" FontSize="14" Margin="10,0,0,0"/>
+                </StackPanel>
 
-
-
+                <!--Detalles de la venta -->
+                <StackPanel Grid.Column="1" Margin="10">
+                    <TextBlock Text="Detalles de la Venta" Foreground="#EAEAEA" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+                    <TextBlock Text="Cantidad:" Foreground="#EAEAEA" FontSize="14" FontWeight="Bold" Margin="10,20,0,0"/>
+                    <TextBox x:Name="tb_cantidad" Background="#2A2D34" Foreground="#EAEAEA" BorderBrush="#4A5568" BorderThickness="1" Margin="10,0,0,0"/>
+                    <Button x:Name="calcular_total" Content="Calcular Importe"  Margin="10,20,0,0" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Click="calcular_importe_total"/>
+                    <TextBlock Text="Total:" Foreground="#EAEAEA" FontSize="14" FontWeight="Bold" Margin="10,20,0,0"/>
+                    <TextBlock x:Name="tb_total" Foreground="#EAEAEA" FontSize="14" Margin="10,0,0,0"/>
+                    <Button Content="Realizar Venta"  Margin="10,20,0,0" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Click="vender"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
 
     </Grid>
 </Window>

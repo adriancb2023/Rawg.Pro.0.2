@@ -25,7 +25,7 @@ namespace Proyecto_Final_PRO
         public MainWindow()
         {
             InitializeComponent();
-
+            desabilitar_botones();
 
             DataContext = this;
             gamesList.Items.Clear();
@@ -37,6 +37,46 @@ namespace Proyecto_Final_PRO
             {
                 ((ScrollViewer)VisualTreeHelper.GetChild(gamesList, 0)).ScrollChanged += GamesList_ScrollChanged;
             }
+        }
+
+        //funcion logueo
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        {
+            string nombreUsuario = UsernameTextBox.Text;
+            string contrasena = PasswordBox.Password;
+
+            using (var context = new Rawg2Context())
+            {
+                var empleado = context.Empleados
+                    .FirstOrDefault(e => e.Nombreusuario == nombreUsuario);
+
+                if (empleado != null)
+                {
+                    if (empleado.Contraseña == contrasena)
+                    {
+                        MessageBox.Show("Inicio de sesión exitoso", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                        login.Visibility = Visibility.Collapsed;
+                        habilitar_botones();
+                        inicio.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Contraseña incorrecta", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Nombre de usuario no encontrado", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        // funcion logout
+        private void logout(object sender, RoutedEventArgs e)
+        {
+            login.Visibility = Visibility.Visible;
+            desabilitar_botones();
+            ocultar_todo();
         }
 
         // Funciones de interfaz de usuario
@@ -53,7 +93,31 @@ namespace Proyecto_Final_PRO
             blur1.Visibility = Visibility.Hidden;
             blur2.Visibility = Visibility.Hidden;
             mi_catalogo.Visibility = Visibility.Hidden;
+            ventas.Visibility = Visibility.Hidden;
 
+        }
+
+        //Funcion desabilitar botones al no estar logueado
+        private void desabilitar_botones()
+        {
+            //desabilitar botones
+            bt_inicio.IsEnabled = false;
+            bt_proximos_lanzamientos.IsEnabled = false;
+            bt_distribuidoras.IsEnabled = false;
+            bt_inventario.IsEnabled = false;
+            bt_catalogo.IsEnabled = false;
+            bt_ventas.IsEnabled = false;
+        }
+
+        //habilitar botones
+        private void habilitar_botones()
+        {
+            bt_inicio.IsEnabled = true;
+            bt_proximos_lanzamientos.IsEnabled = true;
+            bt_distribuidoras.IsEnabled = true;
+            bt_inventario.IsEnabled = true;
+            bt_catalogo.IsEnabled = true;
+            bt_ventas.IsEnabled = true;
         }
 
         //Mostrar inicio
@@ -461,6 +525,116 @@ namespace Proyecto_Final_PRO
             }
         }
 
-        // fin de hoy
+        // fin de ayer
+
+        //mostrar ventas
+        private async void mostrar_ventas(object sender, RoutedEventArgs e)
+        {
+            ocultar_todo();
+            await cargar_juegos_en_inventario();
+            ventas.Visibility = Visibility.Visible;
+        }
+
+        private async Task cargar_juegos_en_inventario()
+        {
+            try
+            {
+                using (var context = new Rawg2Context())
+                {
+                    var juegoIds = await context.Inventarios
+                        .Select(i => i.IdJuego)
+                        .Distinct()
+                        .ToListAsync();
+                    var juegos = await context.Juegos
+                        .Where(j => juegoIds.Contains(j.Id))
+                        .Select(j => new { j.Id, j.Nombre })
+                        .ToListAsync();
+                    cb_juegos_ventas.ItemsSource = juegos;
+                    cb_juegos_ventas.DisplayMemberPath = "Nombre";
+                    cb_juegos_ventas.SelectedValuePath = "Id";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar los juegos en el inventario: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
+        // juego elegido combobox ventas
+        private async void juego_elegido(object sender, SelectionChangedEventArgs e)
+        {
+            if (cb_juegos_ventas.SelectedItem is { } selectedJuego)
+            {
+                int juegoId = (int)cb_juegos_ventas.SelectedValue;
+                using (var context = new Rawg2Context())
+                {
+                    var juego = await context.Juegos
+                        .Where(j => j.Id == juegoId)
+                        .Select(j => new
+                        {
+                            j.Nombre,
+                            j.Precio,
+                            j.Desarrollador,
+                            j.Genero,
+                            j.Puntuacion,
+                            j.Lanzamiento,
+                            j.Descripcion,
+                            j.Capturas,
+                            j.Portada,
+                            Stock = context.Inventarios.Where(i => i.IdJuego == j.Id).Sum(i => i.Stock)
+                        })
+                        .FirstOrDefaultAsync();
+
+                    if (juego != null)
+                    {
+                        tb_generoJuego.Text = juego.Genero;
+                        tb_precioJuego.Text = juego.Precio.ToString();
+                        tb_stockJuego.Text = juego.Stock.ToString();
+                    }
+                    else
+                    {
+                        MessageBox.Show("No se encontraron datos para el juego seleccionado.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No se ha seleccionado ningún juego.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        //funcion calcular total
+        private void calcular_importe_total(object sender, RoutedEventArgs e)
+        {
+            if (int.TryParse(tb_cantidad.Text, out int cantidad) && cantidad > 0)
+            {
+                if (double.TryParse(tb_precioJuego.Text, out double precio))
+                {
+                    double total = precio * cantidad;
+                    tb_total.Text = $"${total:F2}";
+                }
+                else
+                {
+                    MessageBox.Show("El precio del juego no es válido.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Por favor, ingrese una cantidad válida.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        //funcion realizar la venta
+        private void vender(object sender, RoutedEventArgs e)
+        {
+            
+
+
+
+        }
+
+        // falla la funcion calcular importe total y vender hay que pensar como hacerlo
+
     }
 }

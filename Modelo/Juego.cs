@@ -25,5 +25,7 @@ public partial class Juego
 
     public string Portada { get; set; } = null!;
 
+    public virtual ICollection<DetallesVentum> DetallesVenta { get; set; } = new List<DetallesVentum>();
+
     public virtual ICollection<Inventario> Inventarios { get; set; } = new List<Inventario>();
 }
