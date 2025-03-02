@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Linq;
 using Rawg.Pro._0._2.Modelo;
+using Microsoft.EntityFrameworkCore;
 
 namespace Proyecto_Final_PRO
 {
@@ -217,9 +218,13 @@ namespace Proyecto_Final_PRO
 
         private void add_juego_a_inventario2(object sender, EventArgs e)
         {
+            blur1.Visibility = Visibility.Visible;
+            blur2.Visibility = Visibility.Visible;
+            form_inventario.Visibility = Visibility.Visible;
+
             if (gamesList2.SelectedItem is GameDetails selectedGame)
             {
-                var juego = new Juego
+                var juego2 = new Juego
                 {
                     Nombre = selectedGame.Name,
                     Precio = selectedGame.Price,
@@ -231,14 +236,25 @@ namespace Proyecto_Final_PRO
                     Capturas = string.Join(", ", selectedGame.Short_Screenshots.Select(s => s.Image)),
                     Portada = selectedGame.Background_Image
                 };
+
                 using (var context = new Rawg2Context())
                 {
-                    context.Juegos.Add(juego);
-                    context.SaveChanges();
+                    // Comprobar si el juego ya existe en la base de datos
+                    var juegoExistente = context.Juegos.FirstOrDefault(j => j.Nombre == selectedGame.Name);
+
+                    if (juegoExistente != null)
+                    {
+                        MessageBox.Show("El juego ya existe en el inventario", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        context.Juegos.Add(juego2);
+                        context.SaveChanges();
+                        MessageBox.Show("Juego añadido al inventario", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
                 }
-                MessageBox.Show("Juego añadido al inventario", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-        }
+        }        
 
         // aplicar filtro
         private async void aplicar_filtro(object sender, RoutedEventArgs e)
@@ -309,25 +325,33 @@ namespace Proyecto_Final_PRO
             }
         }
 
-        /*
+
         // Guardar juego en inventario
         private void guardar_inventario(object sender, EventArgs e)
         {
             // quiero que coja el nombre del juego seleccionado y haga una consulta para sacar su id y guardarlo en la tabla de inventario con el resto de datos que el usuario introduzca
-            using (Rawg2Context conexion = new Rawg2Context()) {
+            using (Rawg2Context conexion = new Rawg2Context())
+            {
                 // consulta para sacar la id del juego seleccionado
                 var juego = conexion.Juegos.Where(j => j.Nombre == gameName2.Text).FirstOrDefault();
 
                 if (juego != null)
                 {
+                    if (string.IsNullOrEmpty(stock.Text))
+                    {
+                        MessageBox.Show("Por favor, indique el numero de copias que desea", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                    if (string.IsNullOrEmpty(precioVenta.Text))
+                    {
+                        precioVenta.Text = "79.99";
+                    }
                     // guardar en la tabla de inventario
                     Inventario inventario = new Inventario
                     {
                         IdJuego = juego.Id,
-                        Precio = Convert.ToDecimal(tb_precio.Text),
-                        Estado = tb_estado.Text,
-                        Plataforma = tb_plataforma.Text,
-                        Comentario = tb_comentario.Text
+                        PrecioVenta = Convert.ToDouble(precioVenta.Text),
+                        Stock = Convert.ToInt32(stock.Text)
                     };
                     conexion.Inventarios.Add(inventario);
                     conexion.SaveChanges();
@@ -338,10 +362,45 @@ namespace Proyecto_Final_PRO
                     MessageBox.Show("No se ha encontrado el juego seleccionado", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
-
+                form_inventario.Visibility = Visibility.Hidden;
+                blur1.Visibility = Visibility.Hidden;
+                blur2.Visibility = Visibility.Hidden;
             }
-        }*/
+        }
 
-        // funciona git
+        // Cancelar guardar juego en inventario
+        private void cancelar_guardar_inventario(object sender, EventArgs e)
+        {
+            infoJuego2.Visibility = Visibility.Hidden;
+            distribuidoras.Visibility = Visibility.Visible;
+            blur2.Visibility = Visibility.Hidden;
+            blur1.Visibility = Visibility.Hidden;
+        }
+
+        //Inventario
+        private async void mostrar_inventario(object sender, RoutedEventArgs e)
+        {
+            ocultar_todo();
+            await cargar_inventario();
+            inventario.Visibility = Visibility.Visible;
+        }
+
+        private async Task cargar_inventario()
+        {
+            try
+            {
+                using (var context = new Rawg2Context())
+                {
+                    var juegos = await context.Juegos.ToListAsync();
+                    inventoryList.ItemsSource = juegos;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar el inventario: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
     }
 }

@@ -36,6 +36,12 @@
                         <TextBlock Text="Distribuidoras" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
+                <Button x:Name="bt_inventario" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="mostrar_inventario">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:ImageAwesome Icon="Tablet" Width="16" Height="16" Foreground="White" Margin="0,0,5,0"/>
+                        <TextBlock Text="Inventario" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
             </StackPanel>
         </Grid>
 
@@ -84,7 +90,7 @@
                             <DataTemplate>
                                 <Border Background="#2A2D34" CornerRadius="10" Margin="5" Width="220">
                                     <StackPanel>
-                                        <Image Source="{Binding Background_Image}" Width="220" Height="120" Stretch="UniformToFill" Margin="0,0,0,5"/>
+                                        <Image Source="{Binding Background_Image}" Width="200" Height="100" Stretch="UniformToFill" Margin="0,5,0,2"/>
                                         <TextBlock Text="{Binding Name}" Foreground="#EAEAEA" FontSize="14" FontWeight="Bold" TextWrapping="Wrap" Margin="5,0"/>
                                         <TextBlock Text="{Binding Released}" Foreground="#B0B3B8" FontSize="12" Margin="5,0,0,5"/>
                                         <ItemsControl ItemsSource="{Binding Short_Screenshots}">
@@ -139,7 +145,7 @@
                             <TextBlock Text="Desarrolladora: " Foreground="#EAEAEA" FontSize="20" FontWeight="Bold" Margin="0,0,2,0" />
                             <TextBlock x:Name="gameDeveloper" FontSize="20" Foreground="#EAEAEA"/>
                         </StackPanel>
-                        <Button x:Name="bt_comprar" Margin="30,15,30,15" Content="Añadir a mi catálogo" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="add_juego_a_inventario"/>
+                        <Button x:Name="bt_comprar" Margin="30,15,30,15" Content="Listar Proxio Lanzamiento" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Click="add_juego_a_inventario"/>
                         <Separator Background="#EAEAEA" Height="1" Margin="0,5"/>
                         <TextBlock x:Name="gameDescription" FontSize="16" Foreground="#EAEAEA" TextWrapping="Wrap" Text="Capturas del Juego" />
                         <Image x:Name="imagengrande" Height="250" Width="250"/>
@@ -166,7 +172,7 @@
         </Grid>
 
         <!-- Distribuidoras -->
-        <Grid Grid.Column="1" x:Name="distribuidoras" Visibility="Collapsed">
+        <Grid Grid.Column="1" x:Name="distribuidoras" Visibility="Hidden">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.05*"/>
                 <RowDefinition Height="0.05*"/>
@@ -208,9 +214,9 @@
 
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="#2A2D34" CornerRadius="10" Margin="5" Width="220">
+                                    <Border Background="#48D1CC" CornerRadius="10" Margin="5" Width="220">
                                         <StackPanel>
-                                            <Image Source="{Binding Background_Image}" Width="220" Height="120" Stretch="UniformToFill" Margin="0,0,0,5"/>
+                                            <Image Source="{Binding Background_Image}" Width="200" Height="100" Stretch="UniformToFill" Margin="0,5,0,2"/>
                                             <TextBlock Text="{Binding Name}" Foreground="#EAEAEA" FontSize="14" FontWeight="Bold" TextWrapping="Wrap" Margin="5,0"/>
                                             <TextBlock Text="{Binding Released}" Foreground="#B0B3B8" FontSize="12" Margin="5,0,0,5"/>
                                             <ItemsControl ItemsSource="{Binding Short_Screenshots}">
@@ -236,7 +242,7 @@
         </Grid>
 
         <!-- Detalles del juego 2 -->
-        <Grid x:Name="infoJuego2" Visibility="Visible" Grid.Column="1">
+        <Grid x:Name="infoJuego2" Visibility="Hidden" Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="30*"/>
                 <ColumnDefinition Width="70*"/>
@@ -291,29 +297,59 @@
                 </Border>
             </Grid>
 
-            <Grid x:Name="blur1" Grid.Column="1" Opacity="0.85" Background="#1E1E2D" Visibility="Visible" />
-            <Grid x:Name="blur2" Grid.Column="0" Opacity="0.85" Background="#1E1E2D"  Visibility="Visible"/>
+            <Grid x:Name="blur1" Grid.Column="1" Opacity="0.85" Background="#1E1E2D" Visibility="Hidden" />
+            <Grid x:Name="blur2" Grid.Column="0" Opacity="0.85" Background="#1E1E2D"  Visibility="Hidden"/>
 
-            <Grid x:Name="form_inventario" Grid.Column="1" Visibility="Visible" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#2A2D34" Opacity="0.95">
+            <Grid x:Name="form_inventario" Grid.Column="1" Visibility="Hidden" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#2A2D34" Opacity="0.95">
                 <StackPanel Margin="20">
                     <WrapPanel>
                         <Border Background="#2D3748" Width="200" Height="100" CornerRadius="10" Padding="10" Margin="10">
                             <StackPanel>
                                 <TextBlock Text="Número de copias:" Foreground="#EAEAEA" />
-                                <TextBox x:Name="total_juegos" Foreground="#EAEAEA" FontSize="24" FontWeight="Bold" Background="#2A2D34" BorderBrush="#4A5568" BorderThickness="1" />
+                                <TextBox x:Name="stock" Foreground="#EAEAEA" FontSize="24" FontWeight="Bold" Background="#2A2D34" BorderBrush="#4A5568" BorderThickness="1" />
                             </StackPanel>
                         </Border>
                         <Border Background="#2D3748" Width="200" Height="100" CornerRadius="10" Padding="10" Margin="10">
                             <StackPanel>
                                 <TextBlock Text="Precio de Venta: " Foreground="#EAEAEA" />
-                                <TextBox x:Name="precio_venta" Foreground="#EAEAEA" FontSize="24" FontWeight="Bold" Background="#2A2D34" BorderBrush="#4A5568" BorderThickness="1" />
+                                <TextBox x:Name="precioVenta" Foreground="#EAEAEA" FontSize="24" FontWeight="Bold" Background="#2A2D34" BorderBrush="#4A5568" BorderThickness="1" />
                             </StackPanel>
                         </Border>
                     </WrapPanel>
-                    <Button x:Name="bt_guardar" Content="Guardar" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Margin="5" />
-                    <Button x:Name="bt_cancelar" Content="Cancelar" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Margin="5" />
+                    <Button x:Name="bt_guardar" Content="Guardar" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Margin="5" Click="guardar_inventario" />
+                    <Button x:Name="bt_cancelar" Content="Cancelar" Background="#FF2D55" Foreground="White" Padding="10" BorderThickness="0" Cursor="Hand" Margin="5" Click="cancelar_guardar_inventario"/>
                 </StackPanel>
             </Grid>
         </Grid>
+
+        <!--Inventario-->
+        <Grid x:Name="inventario" Grid.Column="1" Visibility="Hidden">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ListBox x:Name="inventoryList" Background="#1E1E2D">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#2A2D34" CornerRadius="10" Margin="5" Width="220">
+                                <StackPanel>
+                                    <Image Source="{Binding Portada}" Width="200" Height="100" Stretch="UniformToFill" Margin="0,5,0,2"/>
+                                    <TextBlock Text="{Binding Nombre}" Foreground="#EAEAEA" FontSize="14" FontWeight="Bold" TextWrapping="Wrap" Margin="5,0"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </ScrollViewer>
+        </Grid>
+
+
+
+
+
+
     </Grid>
 </Window>
