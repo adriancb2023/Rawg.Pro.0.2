@@ -15,7 +15,7 @@
         </Grid.ColumnDefinitions>
         
         <!--Loguin-->
-        <Grid x:Name="login" Visibility="Collapsed" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid x:Name="login" Visibility="Visible" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Border Background="#2A2D34" CornerRadius="10" Padding="20" Margin="20" Opacity="0.9">
                 <StackPanel>
                     <TextBlock Text="Iniciar Sesión" Foreground="#EAEAEA" FontSize="24" FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,20"/>
@@ -27,7 +27,7 @@
         </Grid>
 
         <!-- Barra lateral -->
-        <Grid Background="#16181D" Grid.Column="0">
+        <Grid x:Name="navbar" Background="#16181D" Grid.Column="0" Visibility="Collapsed">
             <StackPanel>
                 <TextBlock Text="GameShop" Foreground="#EAEAEA" FontSize="24" FontWeight="Bold" Margin="10" TextAlignment="Center" />
                 <Separator Background="#EAEAEA" Height="1" Margin="10"/>
@@ -207,7 +207,7 @@
         </Grid>
 
         <!-- Distribuidoras -->
-        <Grid Grid.Column="1" x:Name="distribuidoras" Visibility="Hidden">
+        <Grid Grid.Column="1" x:Name="distribuidoras" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.05*"/>
                 <RowDefinition Height="0.05*"/>
@@ -277,7 +277,7 @@
         </Grid>
 
         <!-- Detalles del juego 2 -->
-        <Grid x:Name="infoJuego2" Visibility="Hidden" Grid.Column="1">
+        <Grid x:Name="infoJuego2" Visibility="Collapsed" Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="30*"/>
                 <ColumnDefinition Width="70*"/>
@@ -358,7 +358,7 @@
         </Grid>
 
         <!--Inventario-->
-        <Grid x:Name="inventario" Grid.Column="1" Visibility="Hidden">
+        <Grid x:Name="inventario" Grid.Column="1" Visibility="Collapsed">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <ListBox x:Name="inventoryList" Background="#1E1E2D">
                     <ListBox.ItemsPanel>
@@ -416,7 +416,7 @@
         </Grid>
 
         <!--Ventas-->
-        <Grid x:Name="ventas" Grid.Column="1" Visibility="Visible">
+        <Grid x:Name="ventas" Grid.Column="1" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.1*"/>
                 <RowDefinition Height="0.9*"/>

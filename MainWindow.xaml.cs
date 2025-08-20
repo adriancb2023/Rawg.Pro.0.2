@@ -58,6 +58,8 @@ namespace Proyecto_Final_PRO
                         login.Visibility = Visibility.Collapsed;
                         habilitar_botones();
                         inicio.Visibility = Visibility.Visible;
+                        navbar.Visibility = Visibility.Visible;
+
                     }
                     else
                     {
@@ -94,7 +96,7 @@ namespace Proyecto_Final_PRO
             blur2.Visibility = Visibility.Hidden;
             mi_catalogo.Visibility = Visibility.Hidden;
             ventas.Visibility = Visibility.Hidden;
-
+            navbar.Visibility = Visibility.Hidden;
         }
 
         //Funcion desabilitar botones al no estar logueado
@@ -125,6 +127,7 @@ namespace Proyecto_Final_PRO
         {
             ocultar_todo();
             inicio.Visibility = Visibility.Visible;
+            navbar.Visibility = Visibility.Visible;
         }
 
         //Mostrar proximos lanzamientos
@@ -133,6 +136,7 @@ namespace Proyecto_Final_PRO
             ocultar_todo();
             await cargar_catalogo();
             proximos_juegos.Visibility = Visibility.Visible;
+            navbar.Visibility = Visibility.Visible;
         }
 
         //Mostrar distribuidoras
@@ -141,6 +145,7 @@ namespace Proyecto_Final_PRO
             ocultar_todo();
             await cargar_distribuidoras();
             distribuidoras.Visibility = Visibility.Visible;
+            navbar.Visibility = Visibility.Visible;
         }
 
         //Mostrar cargar juegos api
@@ -206,6 +211,7 @@ namespace Proyecto_Final_PRO
             }
             proximos_juegos.Visibility = Visibility.Hidden;
             infoJuego.Visibility = Visibility.Visible;
+            navbar.Visibility = Visibility.Visible;
         }
 
         //mostar captura en imagen
@@ -281,6 +287,7 @@ namespace Proyecto_Final_PRO
             }
             distribuidoras.Visibility = Visibility.Hidden;
             infoJuego2.Visibility = Visibility.Visible;
+            navbar.Visibility = Visibility.Visible;
         }
 
         //añadir al inventario real
@@ -289,6 +296,7 @@ namespace Proyecto_Final_PRO
             blur1.Visibility = Visibility.Visible;
             blur2.Visibility = Visibility.Visible;
             form_inventario.Visibility = Visibility.Visible;
+            
 
             if (gamesList2.SelectedItem is GameDetails selectedGame)
             {
@@ -449,6 +457,7 @@ namespace Proyecto_Final_PRO
             ocultar_todo();
             await cargar_inventario();
             inventario.Visibility = Visibility.Visible;
+            navbar.Visibility = Visibility.Visible;
         }
 
         //cargar inventario
@@ -489,6 +498,7 @@ namespace Proyecto_Final_PRO
         private void mostrar_micatalogo(object sender, RoutedEventArgs e)
         {
             ocultar_todo();
+            navbar.Visibility = Visibility.Visible;
             mi_catalogo.Visibility = Visibility.Visible;
             cargar_micatalogo(sender, e);
         }
@@ -532,6 +542,7 @@ namespace Proyecto_Final_PRO
         {
             ocultar_todo();
             await cargar_juegos_en_inventario();
+            navbar.Visibility = Visibility.Visible;
             ventas.Visibility = Visibility.Visible;
         }
 
@@ -628,7 +639,7 @@ namespace Proyecto_Final_PRO
         //funcion realizar la venta
         private void vender(object sender, RoutedEventArgs e)
         {
-            
+
 
 
 
