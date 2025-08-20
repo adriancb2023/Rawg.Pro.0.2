@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Rawg.Pro._0._2.Modelo;
 using Microsoft.EntityFrameworkCore;
+using System.Windows.Input;
 
 namespace Proyecto_Final_PRO
 {
@@ -26,6 +27,7 @@ namespace Proyecto_Final_PRO
         {
             InitializeComponent();
             desabilitar_botones();
+            login.Visibility = Visibility.Visible;
 
             DataContext = this;
             gamesList.Items.Clear();
@@ -37,6 +39,22 @@ namespace Proyecto_Final_PRO
             {
                 ((ScrollViewer)VisualTreeHelper.GetChild(gamesList, 0)).ScrollChanged += GamesList_ScrollChanged;
             }
+        }
+
+        // Eventos para la barra de título personalizada
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
+        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
 
         //funcion logueo
@@ -57,6 +75,7 @@ namespace Proyecto_Final_PRO
                         MessageBox.Show("Inicio de sesión exitoso", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                         login.Visibility = Visibility.Collapsed;
                         habilitar_botones();
+                        EmpleadoNombre.Text = empleado.Nombre + " " + empleado.Apellidos;
                         inicio.Visibility = Visibility.Visible;
                     }
                     else
@@ -76,6 +95,7 @@ namespace Proyecto_Final_PRO
         {
             login.Visibility = Visibility.Visible;
             desabilitar_botones();
+            EmpleadoNombre.Text = "";
             ocultar_todo();
         }
 
@@ -124,6 +144,8 @@ namespace Proyecto_Final_PRO
         private void mostrar_inicio(object sender, RoutedEventArgs e)
         {
             ocultar_todo();
+            resetButtonStyles();
+            bt_inicio.Style = (Style)FindResource("ActiveSidebarButton");
             inicio.Visibility = Visibility.Visible;
         }
 
@@ -131,6 +153,8 @@ namespace Proyecto_Final_PRO
         private async void mostrar_catalogo(object sender, RoutedEventArgs e)
         {
             ocultar_todo();
+            resetButtonStyles();
+            bt_proximos_lanzamientos.Style = (Style)FindResource("ActiveSidebarButton");
             await cargar_catalogo();
             proximos_juegos.Visibility = Visibility.Visible;
         }
@@ -139,8 +163,21 @@ namespace Proyecto_Final_PRO
         private async void mostrar_distribuidoras(object sender, RoutedEventArgs e)
         {
             ocultar_todo();
+            resetButtonStyles();
+            bt_distribuidoras.Style = (Style)FindResource("ActiveSidebarButton");
             await cargar_distribuidoras();
             distribuidoras.Visibility = Visibility.Visible;
+        }
+
+        // Resetear estilos de botones del sidebar
+        private void resetButtonStyles()
+        {
+            bt_inicio.Style = (Style)FindResource("SidebarButton");
+            bt_proximos_lanzamientos.Style = (Style)FindResource("SidebarButton");
+            bt_distribuidoras.Style = (Style)FindResource("SidebarButton");
+            bt_inventario.Style = (Style)FindResource("SidebarButton");
+            bt_catalogo.Style = (Style)FindResource("SidebarButton");
+            bt_ventas.Style = (Style)FindResource("SidebarButton");
         }
 
         //Mostrar cargar juegos api
@@ -447,6 +484,8 @@ namespace Proyecto_Final_PRO
         private async void mostrar_inventario(object sender, RoutedEventArgs e)
         {
             ocultar_todo();
+            resetButtonStyles();
+            bt_inventario.Style = (Style)FindResource("ActiveSidebarButton");
             await cargar_inventario();
             inventario.Visibility = Visibility.Visible;
         }
@@ -489,6 +528,8 @@ namespace Proyecto_Final_PRO
         private void mostrar_micatalogo(object sender, RoutedEventArgs e)
         {
             ocultar_todo();
+            resetButtonStyles();
+            bt_catalogo.Style = (Style)FindResource("ActiveSidebarButton");
             mi_catalogo.Visibility = Visibility.Visible;
             cargar_micatalogo(sender, e);
         }
@@ -531,6 +572,8 @@ namespace Proyecto_Final_PRO
         private async void mostrar_ventas(object sender, RoutedEventArgs e)
         {
             ocultar_todo();
+            resetButtonStyles();
+            bt_ventas.Style = (Style)FindResource("ActiveSidebarButton");
             await cargar_juegos_en_inventario();
             ventas.Visibility = Visibility.Visible;
         }
